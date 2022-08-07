@@ -53,5 +53,7 @@ if __name__ == '__main__':
     commitlabel = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
     print(f'[INFO] Shellbot commit {commitlabel}')
     print('[LOAD] Starting Shellbot...')
+    intents = discord.Intents.default()
+    intents.message_content = True
     client = discord.Client(intents=intents)
     client.run(config['token'])
