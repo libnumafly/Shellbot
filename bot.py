@@ -8,7 +8,8 @@ import asyncio
 from datetime import datetime
 
 # load config file
-with open('config.json', encoding='utf-8') as file:
+cmdargs = sys.argv
+with open(cmdargs[1], encoding='utf-8') as file:
     config = json.load(file)
 
 def truncate(string, length, ellipsis='...'):
