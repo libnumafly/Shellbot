@@ -55,5 +55,5 @@ if __name__ == '__main__':
     print('[LOAD] Starting Shellbot...')
     intents = discord.Intents.default()
     intents.message_content = True
-    client = discord.Client(intents=intents)
+    client = Client(intents=intents)
     client.run(config['token'])
