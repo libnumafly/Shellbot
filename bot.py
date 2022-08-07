@@ -22,13 +22,13 @@ class Client(discord.Client):
         if message.author == self.user:
             return
 
-        if message.content.startswith(f'<@{self.user.id}> ```'):
+        if message.content.startswith(f'<@{self.user.id}> '):
             command = message.content.replace(f'<@{self.user.id}>', '').strip().strip('```')
 
             print(f'[EXEC] @{message.author}: {command}')
 
             embed = discord.Embed(title='Run')
-            embed.set_author(name='Shellbot', url='https://github.com/katabame/shellbot')
+            embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             try:
                 response = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10)
