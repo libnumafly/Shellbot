@@ -6,9 +6,10 @@ import sys
 import subprocess
 import asyncio
 from datetime import datetime
+from pathlib import Path
 
 # setup
-homedir = os.getenv('HOME')
+homedir = str(Path.home())
 cmdargs = sys.argv
 with open(cmdargs[1], encoding='utf-8') as file:
     config = json.load(file)
