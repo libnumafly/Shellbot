@@ -7,7 +7,8 @@ import subprocess
 import asyncio
 from datetime import datetime
 
-# load config file
+# setup
+homedir = r'' + os.getenv('HOME')
 cmdargs = sys.argv
 with open(cmdargs[1], encoding='utf-8') as file:
     config = json.load(file)
@@ -32,7 +33,7 @@ class Client(discord.Client):
             embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             try:
-                response = subprocess.run(command, shell=True, check=True, cwd=os.getenv('HOME'), stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+                response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
                 embed.colour = discord.Colour.green()
                 embed.add_field(name='StdOut', value=f'```{truncate(response.stdout.decode(), 1015)}```')
                 embed.add_field(name='ExitCode', value=response.returncode, inline=True)
