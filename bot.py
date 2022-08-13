@@ -60,7 +60,7 @@ class Client(discord.Client):
 
 def cleanup():
     dockerContainer.stop()
-    dockerContainer.remove()
+    dockerContainer.remove(force=True)
 
 if __name__ == '__main__':
     try:
