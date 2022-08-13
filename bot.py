@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
         print(f'[INFO] Spinning up Docker Container...')
         dockerClient = docker.from_env()
-        dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', tty=True, detach=True, remove=True, auto_remove=True)
+        dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', tty=True, detach=True, privileged=True, remove=True, auto_remove=True)
 
         print('[LOAD] Starting Shellbot...')
         intents = discord.Intents.default()
