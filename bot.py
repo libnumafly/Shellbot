@@ -56,7 +56,7 @@ class Client(discord.Client):
 
             embed.timestamp = datetime.now()
             await message.channel.send(embed=embed)
-            await message.channel.send({response})
+            await message.channel.send(str(response))
 
 def cleanup():
     dockerContainer.remove()
