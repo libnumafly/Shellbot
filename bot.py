@@ -59,6 +59,7 @@ class Client(discord.Client):
             await message.channel.send(str(response))
 
 def cleanup():
+    dockerContainer.stop()
     dockerContainer.remove()
 
 if __name__ == '__main__':
