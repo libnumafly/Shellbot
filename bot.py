@@ -1,10 +1,14 @@
 # encoding: utf-8
 import json
+from termios import CKILL
 import discord
+import docker
 import os
 import sys
 import subprocess
 import asyncio
+import time
+import signal
 from datetime import datetime
 from pathlib import Path
 
@@ -34,7 +38,8 @@ class Client(discord.Client):
             embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             try:
-                response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+                #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+                response = dockerContainer.exec_run(command, privileged=True)
                 embed.colour = discord.Colour.green()
                 embed.add_field(name='StdOut', value=f'```{truncate(response.stdout.decode(), 1015)}```')
                 embed.add_field(name='ExitCode', value=response.returncode, inline=True)
@@ -52,11 +57,23 @@ class Client(discord.Client):
             embed.timestamp = datetime.now()
             await message.channel.send(embed=embed)
 
+def cleanup():
+    dockerContainer.remove()
+
 if __name__ == '__main__':
-    commitlabel = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
-    print(f'[INFO] Shellbot commit {commitlabel}')
-    print('[LOAD] Starting Shellbot...')
-    intents = discord.Intents.default()
-    intents.message_content = True
-    client = Client(intents=intents)
-    client.run(config['token'])
+    try:
+        commitlabel = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
+        print(f'[INFO] Shellbot commit {commitlabel}')
+
+        print(f'[INFO] Spinning up Docker Container...')
+        dockerClient = docker.from_env()
+        dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', detach=True, remove=True)
+
+        print('[LOAD] Starting Shellbot...')
+        intents = discord.Intents.default()
+        intents.message_content = True
+        client = Client(intents=intents)
+        client.run(config['token'])
+
+    finally:
+        cleanup()
