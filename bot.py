@@ -39,7 +39,7 @@ class Client(discord.Client):
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             try:
                 #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
-                response = dockerContainer.exec_run(command, tty=True, privileged=True)
+                response = dockerContainer.exec_run(command, privileged=True)
                 embed.colour = discord.Colour.green()
                 embed.add_field(name='StdOut', value=f'```{truncate(response.stdout.decode(), 1015)}```')
                 embed.add_field(name='ExitCode', value=response.returncode, inline=True)
