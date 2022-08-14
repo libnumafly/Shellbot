@@ -67,7 +67,7 @@ def cleanup():
     dockerContainer.remove(force=True)
 
 def restartContainer():
-    dockerContainer.restart()
+    dockerContainer.restart(timeout=1)
 
 if __name__ == '__main__':
     try:
