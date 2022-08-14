@@ -30,9 +30,8 @@ class Client(discord.Client):
             return
         
         if message.content.startswith(f'<@{self.user.id}> !restart'):
-            await message.channel.send(f'Restarting Container...')
-            containerRestart()
-            await message.channel.send(f'Restarted Container.')
+            await message.channel.send(f'Recived Restart command.')
+            makeRestart()
             return
 
         if message.content.startswith(f'<@{self.user.id}> '):
@@ -61,20 +60,13 @@ class Client(discord.Client):
             await message.channel.send(embed=embed)
             await message.channel.send(str(response))
 
-def Container():
-    dClient = docker.from_env()
-    return dClient
-
-def containerStart():
-    dockerContainer.start()
+def makeRestart():
+    containerDestroy()
+    os.execv(sys.executable, ['python3'] + sys.argv)
 
 def containerDestroy():
     # dockerContainer.stop()
     dockerContainer.remove(force=True)
-
-def containerRestart():
-    containerDestroy()
-    containerStart()
 
 if __name__ == '__main__':
     try:
@@ -83,8 +75,8 @@ if __name__ == '__main__':
 
         print(f'[INFO] Spinning up Docker Container...')
         dockerClient = docker.from_env()
-        dockerContainer = dockerClient.containers.create('libnumafly/shellboxdocker', tty=True, detach=True, privileged=True, remove=True, auto_remove=True)
-        containerStart()
+        dockerContainer = dockerClient.containers.create('libnumafly/shellboxdocker', detach=True, privileged=True, remove=True, auto_remove=True)
+        dockerContainer.start()
         print(f'[INFO] Spin up Docker Container.')
 
         print('[LOAD] Starting Shellbot...')
@@ -94,4 +86,4 @@ if __name__ == '__main__':
         client.run(config['token'])
 
     finally:
-        containerDestroy()
+        containerDestroy(dockerContainer)
