@@ -43,13 +43,15 @@ class Client(discord.Client):
             print(f'[RESP] {response}')
             
             embed.colour = discord.Colour.green()
-            embed.add_field(name='stdout', value=f'```{truncate(response[1][0].decode(), 1015)}```')
+            if response[1][0] != None:
+                embed.add_field(name='stdout', value=f'```{truncate(response[1][0].decode(), 1015)}```')
 
             if response[0] != 0:
                 embed.colour = discord.Colour.red()
-                embed.add_field(name='stderr', value=f'```{truncate(response[1][1].decode(), 1015)}```')
+                if response[1][1] != None:
+                    embed.add_field(name='stderr', value=f'```{truncate(response[1][1].decode(), 1015)}```')
 
-            embed.add_field(name='ExitCode', value=response[0], inline=True)
+            embed.add_field(name='ExitCode', value=response[0])
             # embed.add_field(name='Status', value='Complete')
 
             embed.timestamp = datetime.now()
