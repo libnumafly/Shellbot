@@ -43,7 +43,7 @@ class Client(discord.Client):
             embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             
-            response = dockerContainer.exec_run(command, privileged=True)
+            response = dockerContainer.exec_run(f"bash -c '{command}'", privileged=True)
             print(f'[RESP] {response}')
             
             embed.colour = discord.Colour.green()
