@@ -39,7 +39,7 @@ class Client(discord.Client):
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             
             #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
-            response = dockerContainer.exec_run(command, privileged=True, demux=True)
+            response = dockerContainer.exec_run(f"bash -c '{command}'", privileged=True, demux=True)
             print(f'[RESP] {response}')
             
             embed.colour = discord.Colour.green()
