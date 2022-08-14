@@ -40,6 +40,7 @@ class Client(discord.Client):
             try:
                 #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
                 response = dockerContainer.exec_run(command, privileged=True)
+                print(f'[RESP] {response}')
                 embed.colour = discord.Colour.green()
                 embed.add_field(name='StdOut', value=f'```{truncate(response.stdout.decode(), 1015)}```')
                 embed.add_field(name='ExitCode', value=response.returncode, inline=True)
