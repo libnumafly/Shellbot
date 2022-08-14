@@ -37,24 +37,18 @@ class Client(discord.Client):
             embed = discord.Embed(title='Run')
             embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
-            try:
-                #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
-                response = dockerContainer.exec_run(command, privileged=True)
-                print(f'[RESP] {response}')
-                embed.colour = discord.Colour.green()
-                embed.add_field(name='StdOut', value=f'```{truncate(response.stdout.decode(), 1015)}```')
-                embed.add_field(name='ExitCode', value=response.returncode, inline=True)
-                embed.add_field(name='Status', value='Complete')
-            except subprocess.CalledProcessError as response:
-                embed.colour = discord.Colour.red()
-                embed.add_field(name='StdOut', value=f'```{truncate(response.stderr.decode(), 1015)}```')
-                embed.add_field(name='ExitCode', value=response.returncode, inline=True)
-                embed.add_field(name='Status', value='Error')
-            except subprocess.TimeoutExpired as response:
-                embed.colour = discord.Colour.red()
-                embed.add_field(name='StdOut', value=f'```{truncate(response.stderr.decode(), 1015)}```')
-                embed.add_field(name='Status', value='Timeout')
-
+            
+            #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
+            response = dockerContainer.exec_run(command, privileged=True)
+            print(f'[RESP] {response}')
+            
+            embed.colour = discord.Colour.green()
+            embed.add_field(name='Response', value=f'```{truncate(response[1], 1015)}```')
+            embed.add_field(name='ExitCode', value=response[0], inline=True)
+            embed.add_field(name='Status', value='Complete')
+            
+                
+            
             embed.timestamp = datetime.now()
             await message.channel.send(embed=embed)
             await message.channel.send(str(response))
