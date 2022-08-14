@@ -75,8 +75,8 @@ if __name__ == '__main__':
 
         print(f'[INFO] Spinning up Docker Container...')
         dockerClient = docker.from_env()
-        dockerContainer = dockerClient.containers.create('libnumafly/shellboxdocker', detach=True, privileged=True, remove=True, auto_remove=True)
-        dockerContainer.start()
+        dockerContainer = dockerClient.containers.create('libnumafly/shellboxdocker')
+        dockerContainer.start(detach=True, privileged=True, remove=True, auto_remove=True)
         print(f'[INFO] Spin up Docker Container.')
 
         print('[LOAD] Starting Shellbot...')
