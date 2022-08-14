@@ -31,7 +31,7 @@ class Client(discord.Client):
         
         if message.content.startswith(f'<@{self.user.id}> !restart'):
             await message.channel.send(f'Restarting Container...')
-            restartContainer()
+            containerRestart()
             await message.channel.send(f'Restarted Container.')
             return
 
@@ -44,7 +44,6 @@ class Client(discord.Client):
             embed.set_author(name='Shellbot', url='https://github.com/libnumafly/Shellbot')
             embed.set_footer(text='Shellbot commit ' + commitlabel)
             
-            #response = subprocess.run(command, shell=True, check=True, cwd=homedir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=30)
             response = dockerContainer.exec_run(f"bash -c '{command}'", privileged=True)
             print(f'[RESP] {response}')
             
@@ -62,12 +61,20 @@ class Client(discord.Client):
             await message.channel.send(embed=embed)
             await message.channel.send(str(response))
 
-def cleanup():
-    #dockerContainer.stop()
+def Container():
+    dClient = docker.from_env()
+    return dClient
+
+def containerStart():
+    dockerContainer.start()
+
+def containerDestroy():
+    # dockerContainer.stop()
     dockerContainer.remove(force=True)
 
-def restartContainer():
-    dockerContainer.restart(timeout=1)
+def containerRestart():
+    containerDestroy()
+    containerStart()
 
 if __name__ == '__main__':
     try:
@@ -76,7 +83,9 @@ if __name__ == '__main__':
 
         print(f'[INFO] Spinning up Docker Container...')
         dockerClient = docker.from_env()
-        dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', tty=True, detach=True, privileged=True, remove=True, auto_remove=True)
+        dockerContainer = dockerClient.containers.create('libnumafly/shellboxdocker', tty=True, detach=True, privileged=True, remove=True, auto_remove=True)
+        containerStart()
+        print(f'[INFO] Spin up Docker Container.')
 
         print('[LOAD] Starting Shellbot...')
         intents = discord.Intents.default()
@@ -85,4 +94,4 @@ if __name__ == '__main__':
         client.run(config['token'])
 
     finally:
-        cleanup()
+        containerDestroy()
