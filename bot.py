@@ -28,6 +28,11 @@ class Client(discord.Client):
     async def on_message(self, message):
         if message.author == self.user:
             return
+        
+        if message.content.startswith(f'<@{self.user.id}> !restart'):
+            await message.channel.send(f'Restarting Container...')
+            restartContainer()
+            await message.channel.send(f'Restarted Container.')
 
         if message.content.startswith(f'<@{self.user.id}> '):
             command = message.content.replace(f'<@{self.user.id}>', '').strip().strip('```')
@@ -59,6 +64,9 @@ class Client(discord.Client):
 def cleanup():
     #dockerContainer.stop()
     dockerContainer.remove(force=True)
+
+def restartContainer():
+    dockerContainer.restart()
 
 if __name__ == '__main__':
     try:
