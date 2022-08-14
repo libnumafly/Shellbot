@@ -1,17 +1,20 @@
 # Shellbot for Discord
 
+* Under rewriting source to executing command in Docker Container, so spaghetti here.
+
 ### What does it
 
-Get *Linux shell* or *Windows cmdline* experience on your Discord server(s) and DM.
+Get quick *Linux shell* experience on your Discord server(s) and DM.
 
 ### It needs
 
-Python 3.6+
+Python 3.8+ \
+Discord.py (`pip install git+https://github.com/Rapptz/discord.py`)
 
 ### Just run it yours
 
 1. Clone this repository.
-1. Go [here](https://discordapp.com/developers/applications) and create your own discord application and get `client id` and `bot token`.
+1. Go [here](https://discord.com/developers/applications) and create your own discord application and get `client id` and `bot token`.
 1. Create `config.json`. See `config.json.example` for more info.
 1. Run `pip install -r requirements.txt` to satisfy dependency.
 1. Run `python3 bot.py`.
@@ -19,7 +22,7 @@ Python 3.6+
 
 ### Usage
 
-Mention to bot with codeblock-quoted command
+Mention to bot with command. codeblock-quoted are optional. \
 example:
 @shellbot#0001 ```echo Hello world!```
 
