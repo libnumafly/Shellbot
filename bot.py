@@ -43,7 +43,7 @@ class Client(discord.Client):
             print(f'[RESP] {response}')
             
             embed.colour = discord.Colour.green()
-            embed.add_field(name='Response', value=f'```{truncate(response[1], 1015)}```')
+            embed.add_field(name='Response', value=f'```{truncate(response[1].decode(), 1015)}```')
             embed.add_field(name='ExitCode', value=response[0], inline=True)
             embed.add_field(name='Status', value='Complete')
             
