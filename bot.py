@@ -33,6 +33,7 @@ class Client(discord.Client):
             await message.channel.send(f'Restarting Container...')
             restartContainer()
             await message.channel.send(f'Restarted Container.')
+            return
 
         if message.content.startswith(f'<@{self.user.id}> '):
             command = message.content.replace(f'<@{self.user.id}>', '').strip().strip('```')
