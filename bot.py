@@ -22,6 +22,29 @@ def truncate(string, length, ellipsis='...'):
     return string[:length] + (ellipsis if string[length:] else '')
 
 class Client(discord.Client):
+    def __init__(self):
+        self.commitlabel = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
+        print(f'[INFO] Shellbot commit {commitlabel}')
+
+        print(f'[INFO] Spinning up Docker Container...')
+        self.dockerClient = docker.from_env()
+        self.dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', tty=True, detach=True, remove=True, auto_remove=True)
+        print(f'[INFO] Spin up Docker Container.')
+
+    def __del__(self):
+        destroy()
+    
+    def destroy(self):
+        containerDestroy()
+
+    def makeRestart():
+        containerDestroy()
+        os.execv(sys.executable, ['python3'] + sys.argv)
+
+    def containerDestroy():
+        # dockerContainer.stop()
+        dockerContainer.remove(force=True)
+
     async def on_ready(self):
         print('[ OK ] Shellbot started')
     
@@ -31,7 +54,7 @@ class Client(discord.Client):
         
         if message.content.startswith(f'<@{self.user.id}> !restart'):
             await message.channel.send(f'Recived Restart command.')
-            makeRestart()
+            self.makeRestart()
             return
 
         if message.content.startswith(f'<@{self.user.id}> '):
@@ -60,29 +83,12 @@ class Client(discord.Client):
             await message.channel.send(embed=embed)
             # await message.channel.send(str(response))
 
-def makeRestart():
-    containerDestroy()
-    os.execv(sys.executable, ['python3'] + sys.argv)
-
-def containerDestroy():
-    # dockerContainer.stop()
-    dockerContainer.remove(force=True)
-
 if __name__ == '__main__':
     try:
-        commitlabel = subprocess.check_output(["git", "describe", "--always"]).strip().decode()
-        print(f'[INFO] Shellbot commit {commitlabel}')
-
-        print(f'[INFO] Spinning up Docker Container...')
-        dockerClient = docker.from_env()
-        dockerContainer = dockerClient.containers.run('libnumafly/shellboxdocker', tty=True, detach=True, remove=True, auto_remove=True)
-        print(f'[INFO] Spin up Docker Container.')
-
         print('[LOAD] Starting Shellbot...')
         intents = discord.Intents.default()
         intents.message_content = True
         client = Client(intents=intents)
         client.run(config['token'])
-
     finally:
-        containerDestroy()
+        client.destroy()
